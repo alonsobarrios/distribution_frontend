@@ -3,7 +3,7 @@ import React from 'react';
 
 const Alerta = ({children}) => {
     return (
-        <div className='text-center my-4 bg-red-600 text-white font-bold p-1 uppercase'>
+        <div className='text-sm text-center my-2 bg-red-600 text-white font-bold uppercase'>
             {children}
         </div>
     );

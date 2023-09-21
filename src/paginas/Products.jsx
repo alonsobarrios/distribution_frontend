@@ -1,42 +1,42 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Ticket from '../components/Ticket'
+import Product from '../components/Product'
 import C from '../config';
 
-const Tickets = () => {
+const Products = () => {
 
     const navigate = useNavigate()
-    const [tickets, setTickets] = useState([])
+    const [products, setProducts] = useState([])
 
-    const getTicketsAPI = async () => {
+    const getProductsAPI = async () => {
         try {
-            const url = `${C.JABU_API}/tickets`;
+            const url = `${C.DIS_API}/products`;
             const response = await fetch(url)
             const result = await response.json()
 
-            setTickets(result.tickets)
+            setProducts(result)
         } catch (error) {
             console.log(error);
         }
     }
 
     useEffect(() => {
-        getTicketsAPI()
+        getProductsAPI()
     }, [])
 
-    const handleDeleteTicket = async id => {
-        const confirmation = confirm("¿Desea eliminar esta boleta?")
+    const handleDeleteProduct = async id => {
+        const confirmation = confirm("¿Desea eliminar este producto?")
 
         if (confirmation) {
             try {
-                const url = `${C.JABU_API}/ticket/${id}`
+                const url = `${C.DIS_API}/products/${id}`
                 const response = await fetch(url, {
                     method: 'DELETE'
                 })
                 await response.json()
 
-                const arrayTickets = tickets.filter( ticket => ticket.id !== id)
-                setTickets(arrayTickets)
+                const arrayProducts = products.filter( product => product.id !== id)
+                setProducts(arrayProducts)
             } catch (error) {
                 console.log(error);
             }
@@ -46,31 +46,30 @@ const Tickets = () => {
     return (
         <>
             <h1 className='font-black text-4xl text-blue-900'>
-                Boletas
+                Productos
                 <button
                     type='button'
                     className='bg-green-600 hover:bg-green-700 text-white p-2 uppercase font-bold text-xs ml-5 rounded'
-                    onClick={() => navigate(`/tickets/new`)}
-                > Registrar boleta </button>
+                    onClick={() => navigate(`/products/new`)}
+                > Registrar producto </button>
             </h1>
-            <p className='mt-3'>Administra tus boletas</p>
+            <p className='mt-3'>Administra tus productos</p>
             
             <table className="w-full mt-5 table-auto shadow bg-white">
                 <thead className='bg-blue-800 text-white'>
                     <tr>
-                        <th className='p-2'>Código</th>
+                        <th className='p-2'>Nombre</th>
                         <th className='p-2'>Descripción</th>
-                        <th className='p-2'>Precio</th>
-                        <th className='p-2'>Estado</th>
+                        <th className='p-2'>Cantidad</th>
                         <th className='p-2'>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {tickets.map(ticket => (
-                        <Ticket
-                            key={ticket.id}
-                            ticket={ticket}
-                            handleDeleteTicket={handleDeleteTicket}
+                    {products.map(product => (
+                        <Product
+                            key={product.id}
+                            product={product}
+                            handleDeleteProduct={handleDeleteProduct}
                         />
                     ))}
                 </tbody>
@@ -79,4 +78,4 @@ const Tickets = () => {
     )
 }
 
-export default Tickets
+export default Products

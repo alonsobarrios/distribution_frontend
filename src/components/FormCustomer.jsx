@@ -6,25 +6,27 @@ import Alerta from './Alerta';
 import Spinner from './Spinner';
 import C from '../config'
 
-const FormShopper = ({shopper, loading}) => {
+const FormCustomer = ({customer, loading}) => {
 
     const navigate = useNavigate();
 
-    const NewShopperSchema = Yup.object().shape({
-        document: Yup.number()
+    const NewCustomerSchema = Yup.object().shape({
+        identification: Yup.number()
                         .positive('Número no válido')
                         .integer('Número no válido')
                         .typeError('Número no válido')
-                        .required('Nombre es requerido'),
-        full_name: Yup.string()
+                        .required('Documento es requerido'),
+        name: Yup.string()
                     .min(3, 'Nombre es muy corto')
                     .max(100, 'Nombre es muy largo')
                     .required('Nombre es requerido'),
-        cellphone: Yup.number()
+        address: Yup.string()
+                    .required('Nombre es requerido'),
+        phone: Yup.number()
                     .positive('Número no válido')
                     .integer('Número no válido')
                     .typeError('Número no válido')
-                    .required('Nombre es requerido'),
+                    .required('Celular es requerido'),
         email: Yup.string()
                     .email('Correo no válido')
                     .required('Correo es requerido')
@@ -34,17 +36,17 @@ const FormShopper = ({shopper, loading}) => {
         try {
             let response;
 
-            if (shopper.id) {
-                const url = `${C.JABU_API}/shopper/${shopper.id}`
+            if (customer.id) {
+                const url = `${C.DIS_API}/customers/${customer.id}`
                 response = await fetch(url, {
-                    method: 'PUT',
+                    method: 'PATCH',
                     body: JSON.stringify(values),
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 })
             } else {
-                const url = `${C.JABU_API}/shopper`
+                const url = `${C.DIS_API}/customers`
                 response = await fetch(url, {
                     method: 'POST',
                     body: JSON.stringify(values),
@@ -55,7 +57,7 @@ const FormShopper = ({shopper, loading}) => {
             }
             
             await response.json()
-            navigate('/shoppers')
+            navigate('/customers')
         } catch (error) {
             console.log(error);
         }
@@ -65,22 +67,23 @@ const FormShopper = ({shopper, loading}) => {
         loading ? <Spinner /> : (
             <div className='bg-white mt-10 px-5 py-10 rounded-md shadow-md md:w-3/4 mx-auto'>
                 <h1 className='text-gray-600 font-bold text-xl uppercase text-center'>
-                    {shopper?.id ? 'Editar Comprador' : 'Agregar Comprador'}
+                    {customer?.id ? 'Editar Cliente' : 'Agregar Cliente'}
                 </h1>
 
                 <Formik
                     initialValues={{
-                        document: shopper?.document ?? '',
-                        full_name: shopper?.full_name ?? '',
-                        cellphone: shopper?.cellphone ?? '',
-                        email: shopper?.email ?? ''
+                        identification: customer?.identification ?? '',
+                        name: customer?.name ?? '',
+                        address: customer?.address ?? '',
+                        phone: customer?.phone ?? '',
+                        email: customer?.email ?? ''
                     }}
                     enableReinitialize={true}
                     onSubmit={ async (values, {resetForm}) => {
                         await handleSubmit(values);
                         resetForm();
                     }}
-                    validationSchema={NewShopperSchema}
+                    validationSchema={NewCustomerSchema}
                 >
                     {({errors, touched}) => {
                         
@@ -91,49 +94,65 @@ const FormShopper = ({shopper, loading}) => {
                             <div className='mb-4'>
                                 <label 
                                     className='text-gray-800'
-                                    htmlFor="document"
+                                    htmlFor="identification"
                                 >Documento:</label>
                                 <Field 
-                                    id="document"
+                                    id="identification"
                                     type="text"
                                     className="mt-2 block w-full p-3 bg-gray-50"
-                                    placeholder="Documento del Comprador"
-                                    name="document"
+                                    placeholder="Documento del Cliente"
+                                    name="identification"
                                 />
-                                {errors.document && touched.document ? (
-                                    <Alerta>{errors.document}</Alerta>
+                                {errors.identification && touched.identification ? (
+                                    <Alerta>{errors.identification}</Alerta>
                                 ) : null}
                             </div>
                             <div className='mb-4'>
                                 <label 
                                     className='text-gray-800'
-                                    htmlFor="full_name"
+                                    htmlFor="name"
                                 >Nombre:</label>
                                 <Field 
-                                    id="full_name"
+                                    id="name"
                                     type="text"
                                     className="mt-2 block w-full p-3 bg-gray-50"
-                                    placeholder="Nombre del Comprador"
-                                    name="full_name"
+                                    placeholder="Nombre del Cliente"
+                                    name="name"
                                 />
-                                {errors.full_name && touched.full_name ? (
-                                    <Alerta>{errors.full_name}</Alerta>
+                                {errors.name && touched.name ? (
+                                    <Alerta>{errors.name}</Alerta>
                                 ) : null}
                             </div>
                             <div className='mb-4'>
                                 <label 
                                     className='text-gray-800'
-                                    htmlFor="cellphone"
-                                >Celular:</label>
+                                    htmlFor="address"
+                                >Dirección:</label>
                                 <Field 
-                                    id="cellphone"
+                                    id="address"
                                     type="text"
                                     className="mt-2 block w-full p-3 bg-gray-50"
-                                    placeholder="Celular del Comptrador"
-                                    name="cellphone"
+                                    placeholder="Dirección del Cliente"
+                                    name="address"
                                 />
-                                {errors.cellphone && touched.cellphone ? (
-                                    <Alerta>{errors.cellphone}</Alerta>
+                                {errors.address && touched.address ? (
+                                    <Alerta>{errors.address}</Alerta>
+                                ) : null}
+                            </div>
+                            <div className='mb-4'>
+                                <label 
+                                    className='text-gray-800'
+                                    htmlFor="phone"
+                                >Teléfono :</label>
+                                <Field 
+                                    id="phone"
+                                    type="text"
+                                    className="mt-2 block w-full p-3 bg-gray-50"
+                                    placeholder="Teléfono  del Cliente"
+                                    name="phone"
+                                />
+                                {errors.phone && touched.phone ? (
+                                    <Alerta>{errors.phone}</Alerta>
                                 ) : null}
                             </div>
                             <div className='mb-4'>
@@ -155,8 +174,8 @@ const FormShopper = ({shopper, loading}) => {
 
                             <input 
                                 type="submit"
-                                value={shopper?.id ? 'Editar Comprador' : 'Registrar Comprador'}
-                                className='mt-5 w-full bg-blue-800 p-3 text-white uppercase font-bold text-lg'
+                                value={customer?.id ? 'Editar Cliente' : 'Registrar Cliente'}
+                                className='mt-5 w-full bg-blue-800 p-3 text-white uppercase font-bold text-lg rounded'
                             />
                         </Form>
                     )}}
@@ -166,9 +185,9 @@ const FormShopper = ({shopper, loading}) => {
     )
 }
 
-FormShopper.defaultProps = {
-    shopper: {},
+FormCustomer.defaultProps = {
+    customer: {},
     loading: false
 }
 
-export default FormShopper
+export default FormCustomer

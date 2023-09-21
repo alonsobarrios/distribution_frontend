@@ -1,5 +1,5 @@
 const CONSTANTS = {
-    JABU_API: "http://localhost/jabu_api/public/api/v1"
+    DIS_API: "http://localhost:3000"
 };
 
 export default CONSTANTS;

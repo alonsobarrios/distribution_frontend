@@ -1,66 +1,66 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Shopper from '../components/Shopper'
+import Customer from '../components/Customer'
 import C from '../config'
 
-const Shoppers = () => {
+const Customers = () => {
 
     const navigate = useNavigate()
-    const [shoppers, setShoppers] = useState([])
+    const [customers, setCustomers] = useState([])
 
-    const getShoppersAPI = async () => {
+    const getCustomersAPI = async () => {
         try {
-            const url = `${C.JABU_API}/shoppers`
+            const url = `${C.DIS_API}/customers`
             const response = await fetch(url)
             const result = await response.json()
 
-            setShoppers(result.shoppers)
+            setCustomers(result)
         } catch (error) {
             console.log(error);
         }
     }
 
     useEffect(() => {
-        getShoppersAPI()
+        getCustomersAPI()
     }, [])
 
-    const handleDeleteShopper = async id => {
+    const handleDeleteCustomer = async id => {
         const confirmation = confirm("¿Desea eliminar este comprador?")
 
         if (confirmation) {
             try {
-                const url = `${C.JABU_API}/shopper/${id}`
+                const url = `${C.DIS_API}/customers/${id}`
                 const response = await fetch(url, {
                     method: 'DELETE'
                 })
                 await response.json()
 
-                const arrayShoppers = shoppers.filter( shopper => shopper.id !== id)
-                setShoppers(arrayShoppers)
+                const arrayCustomers = customers.filter( customer => customer.id !== id)
+                setCustomers(arrayCustomers)
             } catch (error) {
                 console.log(error);
             }
         }
     }
 
-    const handleChangeStatusShopper = async id => {
+    const handleChangeStatusCustomer = async id => {
         const confirmation = confirm("¿Desea cambiar estado del comprador?")
 
         if (confirmation) {
             try {
-                let shopper = shoppers.filter( shopper => shopper.id === id);
-                let status = shopper[0].status;
+                let customer = customers.filter( customer => customer.id === id);
+                let status = customer[0].status;
 
-                const url = `${C.JABU_API}/shopper/${id}`
+                const url = `${C.DIS_API}/customers/${id}`
                 const response = await fetch(url, {
-                    method: 'PUT',
+                    method: 'PATCH',
                     body: JSON.stringify({status: !status}),
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 })
                 await response.json()
-                getShoppersAPI()
+                getCustomersAPI()
             } catch (error) {
                 console.log(error);
             }
@@ -70,33 +70,32 @@ const Shoppers = () => {
     return (
         <>
             <h1 className='font-black text-4xl text-blue-900'>
-                Compradores
+                Clientes
                 <button
                     type='button'
                     className='bg-green-600 hover:bg-green-700 text-white p-2 uppercase font-bold text-xs ml-5 rounded'
-                    onClick={() => navigate(`/shoppers/new`)}
-                > Registrar comprador </button>
+                    onClick={() => navigate(`/customers/new`)}
+                > Registrar cliente </button>
             </h1>
-            <p className='mt-3'>Administra tus compradores</p>
+            <p className='mt-3'>Administra tus clientes</p>
             
             <table className="w-full mt-5 table-auto shadow bg-white">
                 <thead className='bg-blue-800 text-white'>
                     <tr>
                         <th className='p-2'>Documento</th>
                         <th className='p-2'>Nombre</th>
-                        <th className='p-2'>Celular</th>
+                        <th className='p-2'>Dirección</th>
+                        <th className='p-2'>Teléfono</th>
                         <th className='p-2'>Correo</th>
-                        <th className='p-2'>Estado</th>
                         <th className='p-2'>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {shoppers.map(shopper => (
-                        <Shopper
-                            key={shopper.id}
-                            shopper={shopper}
-                            handleDeleteShopper={handleDeleteShopper}
-                            handleChangeStatusShopper={handleChangeStatusShopper}
+                    {customers.map(customer => (
+                        <Customer
+                            key={customer.id}
+                            customer={customer}
+                            handleDeleteCustomer={handleDeleteCustomer}
                         />
                     ))}
                 </tbody>
@@ -105,4 +104,4 @@ const Shoppers = () => {
     )
 }
 
-export default Shoppers
+export default Customers

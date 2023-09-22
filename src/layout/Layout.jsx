@@ -27,6 +27,9 @@ const Layout = () => {
                         + Pedidos
                     </Link>
                 </nav>
+                <div className='fixed bottom-0 text-indigo-50 p-2'>
+                    <span className='font-bold'>Google App Engine</span> <small>(PaaS)</small>
+                </div>
             </div>
             <div className="md:w-4/5 p-10 md:h-screen overflow-scroll">
                 <Outlet />

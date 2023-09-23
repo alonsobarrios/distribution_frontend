@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Product from '../components/Product'
 import C from '../config';
+import Spinner from '../components/Spinner';
 
 const Products = () => {
 
     const navigate = useNavigate()
     const [products, setProducts] = useState([])
+    const [loading, setLoading] = useState(true)
 
     const getProductsAPI = async () => {
         try {
@@ -15,6 +17,7 @@ const Products = () => {
             const result = await response.json()
 
             setProducts(result)
+            setLoading(!loading)
         } catch (error) {
             console.log(error);
         }
@@ -55,25 +58,27 @@ const Products = () => {
             </h1>
             <p className='mt-3'>Administra tus productos</p>
             
-            <table className="w-full mt-5 table-auto shadow bg-white">
-                <thead className='bg-blue-800 text-white'>
-                    <tr>
-                        <th className='p-2'>Nombre</th>
-                        <th className='p-2'>Descripción</th>
-                        <th className='p-2'>Cantidad</th>
-                        <th className='p-2'>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {products.map(product => (
-                        <Product
-                            key={product.id}
-                            product={product}
-                            handleDeleteProduct={handleDeleteProduct}
-                        />
-                    ))}
-                </tbody>
-            </table>
+            {loading ? <Spinner /> :
+                <table className="w-full mt-5 table-auto shadow bg-white">
+                    <thead className='bg-blue-800 text-white'>
+                        <tr>
+                            <th className='p-2'>Nombre</th>
+                            <th className='p-2'>Descripción</th>
+                            <th className='p-2'>Cantidad</th>
+                            <th className='p-2'>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {products.map(product => (
+                            <Product
+                                key={product.id}
+                                product={product}
+                                handleDeleteProduct={handleDeleteProduct}
+                            />
+                        ))}
+                    </tbody>
+                </table>
+            }
         </>
     )
 }

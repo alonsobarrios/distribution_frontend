@@ -74,7 +74,7 @@ const FormOrder = ({order, loading, products, customers}) => {
                         deliveryDate: order?.deliveryDate ? new Date(order?.deliveryDate).toISOString().slice(0, 10) : '',
                         address: order?.address ?? '',
                         postalCode: order?.postalCode ?? '',
-                        status: order?.status ?? ''
+                        status: order?.status ?? 'RECEIVED'
                     }}
                     enableReinitialize={true}
                     onSubmit={ async (values, {resetForm}) => {

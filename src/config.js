@@ -1,5 +1,5 @@
 const CONSTANTS = {
-    DIS_API: "http://localhost:3000"
+    DIS_API: "http://35.215.237.152:4000"
 };
 
 export default CONSTANTS;

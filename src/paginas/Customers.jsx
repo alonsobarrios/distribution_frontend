@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Customer from '../components/Customer'
 import C from '../config'
+import Spinner from '../components/Spinner'
 
 const Customers = () => {
 
     const navigate = useNavigate()
     const [customers, setCustomers] = useState([])
+    const [loading, setLoading] = useState(true)
 
     const getCustomersAPI = async () => {
         try {
@@ -15,6 +17,7 @@ const Customers = () => {
             const result = await response.json()
 
             setCustomers(result)
+            setLoading(!loading)
         } catch (error) {
             console.log(error);
         }
@@ -79,27 +82,29 @@ const Customers = () => {
             </h1>
             <p className='mt-3'>Administra tus clientes</p>
             
-            <table className="w-full mt-5 table-auto shadow bg-white">
-                <thead className='bg-blue-800 text-white'>
-                    <tr>
-                        <th className='p-2'>Documento</th>
-                        <th className='p-2'>Nombre</th>
-                        <th className='p-2'>Dirección</th>
-                        <th className='p-2'>Teléfono</th>
-                        <th className='p-2'>Correo</th>
-                        <th className='p-2'>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {customers.map(customer => (
-                        <Customer
-                            key={customer.id}
-                            customer={customer}
-                            handleDeleteCustomer={handleDeleteCustomer}
-                        />
-                    ))}
-                </tbody>
-            </table>
+            {loading ? <Spinner /> :
+                <table className="w-full mt-5 table-auto shadow bg-white">
+                    <thead className='bg-blue-800 text-white'>
+                        <tr>
+                            <th className='p-2'>Documento</th>
+                            <th className='p-2'>Nombre</th>
+                            <th className='p-2'>Dirección</th>
+                            <th className='p-2'>Teléfono</th>
+                            <th className='p-2'>Correo</th>
+                            <th className='p-2'>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {customers.map(customer => (
+                            <Customer
+                                key={customer.id}
+                                customer={customer}
+                                handleDeleteCustomer={handleDeleteCustomer}
+                            />
+                        ))}
+                    </tbody>
+                </table>
+            }
         </>
     )
 }

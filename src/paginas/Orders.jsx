@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Order from '../components/Order'
 import C from '../config'
+import Spinner from '../components/Spinner'
 
 const Orders = () => {
 
     const navigate = useNavigate()
     const [orders, setOrders] = useState([])
+    const [loading, setLoading] = useState(true)
 
     const getOrdersAPI = async () => {
         try {
@@ -15,6 +17,7 @@ const Orders = () => {
             const result = await response.json()
 
             setOrders(result)
+            setLoading(!loading)
         } catch (error) {
             console.log(error);
         }
@@ -76,31 +79,33 @@ const Orders = () => {
             </h1>
             <p className='mt-3'>Gestión de pedidos</p>
             
-            <table className="w-full mt-5 table-auto shadow bg-white">
-                <thead className='bg-blue-800 text-white'>
-                    <tr>
-                        <th className='p-2'>Cliente</th>
-                        <th className='p-2'>Producto</th>
-                        <th className='p-2'>Cantidad</th>
-                        <th className='p-2'>Fecha pedido</th>
-                        <th className='p-2'>Fecha entrega</th>
-                        <th className='p-2'>Dirección</th>
-                        <th className='p-2'>Código postal</th>
-                        <th className='p-2'>Estado</th>
-                        <th className='p-2'>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {orders.map(order => (
-                        <Order
-                            key={order.id}
-                            order={order}
-                            handleCancelOrder={handleCancelOrder}
-                            handleDeleteOrder={handleDeleteOrder}
-                        />
-                    ))}
-                </tbody>
-            </table>
+            {loading ? <Spinner /> : 
+                <table className="w-full mt-5 table-auto shadow bg-white">
+                    <thead className='bg-blue-800 text-white'>
+                        <tr>
+                            <th className='p-2'>Cliente</th>
+                            <th className='p-2'>Producto</th>
+                            <th className='p-2'>Cantidad</th>
+                            <th className='p-2'>Fecha pedido</th>
+                            <th className='p-2'>Fecha entrega</th>
+                            <th className='p-2'>Dirección</th>
+                            <th className='p-2'>Código postal</th>
+                            <th className='p-2'>Estado</th>
+                            <th className='p-2'>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {orders.map(order => (
+                            <Order
+                                key={order.id}
+                                order={order}
+                                handleCancelOrder={handleCancelOrder}
+                                handleDeleteOrder={handleDeleteOrder}
+                            />
+                        ))}
+                    </tbody>
+                </table>
+            }
         </>
     )
 }
